@@ -1,0 +1,16 @@
+#################################
+########### PASSBOLT ############
+#################################
+_passbolt_net: passbolt_network
+_passbolt_name: passbolt
+_passbolt_version: 3.4.0-ce
+_passbolt_restore_version: 3.3.1-ce
+_app_full_base_url: https://passbolt.testdomain.com
+_email_default_from: mail@outlook.com
+_email_transport_default_host: smtp.office365.com
+_email_transport_default_port: "587"
+_email_transport_default_tls: "true"
+_email_transport_default_username: mail@outlook.com
+_email_transport_default_password:
+_passbolt_key_name: www-data
+_passbolt_key_email: mail@outlook.com

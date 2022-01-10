@@ -1,0 +1,10 @@
+---
+- name: remove MariaDB container
+  docker_container:
+    name: "{{ _mariadb_name }}"
+    state: absent
+- name: remove old MariaDB docker image
+  docker_image:
+    state: absent
+    name: mariadb
+    tag: "{{ _mariadb_restore_version }}"

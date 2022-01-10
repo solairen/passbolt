@@ -1,0 +1,6 @@
+---
+- import_tasks: greenfield.yml
+  when: deployment == "greenfield"
+- import_tasks: brownfield.yml
+  when: deployment == "brownfield"
+- import_tasks: passbolt.yml

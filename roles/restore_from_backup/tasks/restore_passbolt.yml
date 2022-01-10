@@ -1,0 +1,53 @@
+---
+- name: download passbolt backups from Azure
+  shell: "az storage blob download --account-name {{ account }} --container {{ container }} --name {{ item | basename }}.zip --file {{ item | basename }}.zip --account-key {{ key }}"
+  with_items:
+    - "{{ _passbolt_backup }}"
+  when: _restore_from_backup.azure == 1
+- name: download passbolt backups from AWS
+  amazon.aws.aws_s3:
+    aws_access_key: "{{ _aws_access_key }}"
+    aws_secret_key: "{{ _aws_secret_key }}"
+    mode: get
+    bucket: "{{ _aws_bucket }}"
+    object: "passbolt/{{ item | basename }}.zip"
+    dest: "$HOME/{{ item | basename }}.zip"
+  with_items:
+    - "{{ _passbolt_backup }}"
+  when: _restore_from_backup.aws == 1
+- name: download passbolt backups from Linode
+  shell: "s3cmd get --access_key={{ _linode_access_key }} --secret_key={{ _linode_secret_key }} --host={{ _host }} --no-ssl --host-bucket={{ _host }} s3://{{ _linode_bucket }}/{{ item | basename }}.zip"
+  with_items:
+    - "{{ _passbolt_backup }}"
+  when: _restore_from_backup.linode == 1
+- name: unzip passbolt backup
+  become: true
+  shell: "unzip -o -P {{ _zip_password }} /home/{{ ansible_user }}/{{ item }}.zip -d /"
+  with_items:
+    - "{{ _passbolt_backup }}"
+- name: start passbolt container
+  become: true
+  docker_container:
+    name: "{{ _passbolt_name }}"
+    state: started
+- name: change owner for passbolt folders
+  become: true
+  file:
+    path: "/var/passbolt/{{ item }}"
+    state: directory
+    recurse: yes
+    owner: www-data
+    group: www-data
+  with_items:
+    - "{{ _passbolt_backup }}"
+- name: import gpg keys
+  become: true
+  shell: "docker exec {{ _passbolt_name }} bash -c 'gpg --import /etc/passbolt/gpg/{{ item }}.asc'"
+  with_items:
+    - "{{ _gpg_server_keys }}"
+- name: remove backups from the host
+  file:
+    state: absent
+    path: "{{ item }}.zip"
+  with_items:
+    - "{{ _passbolt_backup }}"

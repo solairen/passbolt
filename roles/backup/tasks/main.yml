@@ -1,0 +1,5 @@
+---
+- import_tasks: backup_mariadb.yml
+  when: _mariadb == 1 and inventory_hostname in groups['mariadb']
+- import_tasks: backup_passbolt.yml
+  when: _passbolt == 1 and inventory_hostname in groups['passbolt']

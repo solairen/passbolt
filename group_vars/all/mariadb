@@ -1,0 +1,12 @@
+##############################
+########### MARIADB ##########
+##############################
+_mariadb_net: mariadb_network
+_mariadb_name: mariadb
+_mariadb_version: 10.7.1
+_mariadb_restore_version: 10.6.5
+_mariadb_root_password:
+_mariadb_password:
+_mariadb_username: passbolt
+_mariadb_database: passbolt
+_mariadb_port: 3306

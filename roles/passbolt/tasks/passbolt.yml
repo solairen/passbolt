@@ -1,0 +1,37 @@
+---
+- name: "{{ _task_name }}"
+  vars:
+    _check_aio:
+  docker_container:
+    name: "{{ _passbolt_name }}"
+    image: "passbolt/passbolt:{{ _version }}"
+    state: "{% if _restore_from_backup.azure == 1 -%} present {%- elif _restore_from_backup.linode == 1 -%} present {%- elif _restore_from_backup.aws == 1 -%} present {%- else -%} started {%- endif %}"
+    network_mode: "{{ _passbolt_net }}"
+    networks:
+      - name: "{{ _passbolt_net }}"
+    ports:
+      - "80:80/tcp"
+      - "443:443/tcp"
+    volumes:
+      - passbolt-gpg:/etc/passbolt/gpg
+      - passbolt-cert:/etc/ssl/certs
+      - passbolt-jwt:/etc/passbolt/jwt
+    env:
+      TZ: "{{ _time_zone }}"
+      DATASOURCES_DEFAULT_HOST: "{{ _mariadb_ip_address }}"
+      DATASOURCES_DEFAULT_PASSWORD: "{{ _mariadb_password }}"
+      DATASOURCES_DEFAULT_USERNAME: "{{ _mariadb_username }}"
+      DATASOURCES_DEFAULT_DATABASE: "{{ _mariadb_database }}"
+      APP_FULL_BASE_URL: "{{ _app_full_base_url }}"
+      EMAIL_DEFAULT_FROM: "{{ _email_default_from }}"
+      EMAIL_TRANSPORT_DEFAULT_HOST: "{{ _email_transport_default_host }}"
+      EMAIL_TRANSPORT_DEFAULT_PORT: "{{ _email_transport_default_port }}"
+      EMAIL_TRANSPORT_DEFAULT_TLS: "{{ _email_transport_default_tls }}"
+      EMAIL_TRANSPORT_DEFAULT_USERNAME: "{{ _email_transport_default_username }}"
+      EMAIL_TRANSPORT_DEFAULT_PASSWORD: "{{ _email_transport_default_password }}"
+      PASSBOLT_KEY_NAME: "{{ _passbolt_key_name }}"
+      PASSBOLT_KEY_EMAIL: "{{ _passbolt_key_email }}"
+      PASSBOLT_PLUGINS_JWT_AUTHENTICATION_ENABLED: "TRUE"
+      PASSBOLT_PLUGINS_MOBILE_ENABLED: "TRUE"
+    hostname: "{{ _passbolt_name }}"
+    restart_policy: unless-stopped

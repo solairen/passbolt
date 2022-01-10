@@ -1,0 +1,39 @@
+---
+- name: install all necessary packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  loop:
+    - "{{ _debian_packages }}"
+    - "{{ _python_packages }}"
+- name: add docker gpg key
+  apt_key:
+    url: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+    state: present
+- name: add docker repository
+  apt_repository:
+    repo: 'deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_lsb.codename | lower }} stable'
+    state: present
+    update_cache: true
+- name: install docker
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  loop: "{{ _docker_packages }}"
+- name: enable docker service
+  service:
+    name: docker
+    enabled: true
+    state: restarted
+- name: install docker-compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/{{ _docker_compose_version }}/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: '+x'
+- name: install required python packages
+  pip:
+    name: "{{ item }}"
+    executable: pip3
+  loop: "{{ _python_pip_packages }}"

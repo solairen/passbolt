@@ -1,0 +1,23 @@
+---
+- hosts: mariadb
+  become: true
+  gather_facts: true
+  tasks:
+    - block:
+        - name: install MariaDB
+          vars:
+            _version: "{{ _mariadb_version }}"
+            _task_name: "run MariaDB in version: {{ _mariadb_version }}"
+          import_role:
+            name: roles/mariadb
+      rescue:
+        - name: do not restore in greenfield
+          fail:
+            msg: "Instasllation failed!"
+          when: deployment | lower == "greenfield"
+        - name: restore MariaDB on fail
+          vars:
+            _version: "{{ _mariadb_restore_version }}"
+            _task_name: "restore MariaDB to version: {{ _mariadb_restore_version }}"
+          include: ../roles/mariadb/tasks/mariadb.yml
+          when: deployment | lower == "brownfield"

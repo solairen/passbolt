@@ -1,0 +1,41 @@
+################################
+############ COMMON ############
+################################
+_time_zone: Europe/Warsaw
+_mariadb: 1
+_passbolt: 1
+_zip_password:
+
+################################
+##### OTHER CONFIGURATION ######
+################################
+_docker_compose_version: 1.29.2
+_restore_from_backup:
+    azure: 0
+    linode: 0
+    aws: 0
+
+################################
+########## AZURE CLI ###########
+################################
+_azure_upload: 0
+_container_name:
+_account_name:
+_account_key:
+
+################################
+############ LINODE ############
+################################
+_linode_upload: 0
+_linode_bucket:
+_linode_access_key:
+_linode_secret_key:
+_host:
+
+################################
+############## AWS #############
+################################
+_aws_upload: 0
+_aws_bucket:
+_aws_access_key:
+_aws_secret_key:

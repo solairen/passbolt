@@ -1,0 +1,26 @@
+---
+- name: pull Passbolt docker image
+  docker_image:
+    name: "passbolt/passbolt:{{ _passbolt_version }}"
+- name: create docker network
+  docker_network:
+    name: "{{ _passbolt_net }}"
+    state: present
+  when: aio == 0
+- name: create passbolt folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0440
+  loop: "{{ _passbolt_folder }}"
+- name: create passbolt gpg docker volume
+  docker_volume:
+    name: "passbolt-{{ item | basename }}"
+    driver_options:
+      type: none
+      device: "{{ item }}"
+      o: bind
+  with_items:
+    - "{{ _passbolt_folder }}"

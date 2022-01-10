@@ -1,0 +1,6 @@
+---
+_acc: "{{ _account_name }}"
+_cont: "{{ _container_name }}"
+_key: "{{ _account_key }}"
+_passbolt_backup: [ /var/passbolt/gpg, /var/passbolt/jwt ]
+_mariadb_backup: [ /var/mariadb ]

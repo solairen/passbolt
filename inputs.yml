@@ -1,0 +1,6 @@
+---
+# Select deployment type: greenfield / brownfied.
+deployment: greenfield
+
+# Select if Passbolt and MariaDB are installed on one host or seperate.
+aio: 0

@@ -1,0 +1,12 @@
+---
+- include: playbooks/check_deployment.yml
+- include: playbooks/prepare.yml
+  when: deployment | lower == "greenfield"
+- include: playbooks/backup.yml
+  when: deployment | lower == "brownfield"
+- include: playbooks/mariadb.yml
+  when: _mariadb == 1
+- include: playbooks/passbolt.yml
+  when: _passbolt == 1
+- include: playbooks/restore.yml
+  when: deployment | lower == "greenfield"

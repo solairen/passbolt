@@ -1,0 +1,23 @@
+---
+- hosts: passbolt
+  become: true
+  gather_facts: true
+  tasks:
+    - block:
+        - name: install Passbolt
+          vars:
+            _version: "{{ _passbolt_version }}"
+            _task_name: "run Passbolt in version: {{ _passbolt_version }}"
+          import_role:
+            name: roles/passbolt
+      rescue:
+        - name: do not restore in greenfield
+          fail:
+            msg: "Installation failed!"
+          when: deployment | lower == "greenfield"
+        - name: restore Passbolt on fail
+          vars:
+            _version: "{{ _passbolt_restore_version }}"
+            _task_name: "restore Passbolt to version: {{ _passbolt_restore_version }}"
+          include: ../roles/passbolt/tasks/passbolt.yml
+          when: deployment | lower == "brownfield"
