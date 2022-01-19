@@ -1,6 +1,7 @@
 ---
 - name: download passbolt backups from Azure
-  shell: "az storage blob download --account-name {{ account }} --container {{ container }} --name {{ item | basename }}.zip --file {{ item | basename }}.zip --account-key {{ key }}"
+  command: "az storage blob download
+    --account-name {{ account }} --container {{ container }} --name {{ item | basename }}.zip --file {{ item | basename }}.zip --account-key {{ key }}"
   with_items:
     - "{{ _passbolt_backup }}"
   when: _restore_from_backup.azure == 1
@@ -16,15 +17,18 @@
     - "{{ _passbolt_backup }}"
   when: _restore_from_backup.aws == 1
 - name: download passbolt backups from Linode
-  shell: "s3cmd get --access_key={{ _linode_access_key }} --secret_key={{ _linode_secret_key }} --host={{ _host }} --no-ssl --host-bucket={{ _host }} s3://{{ _linode_bucket }}/{{ item | basename }}.zip"
+  command: "s3cmd get
+    --access_key={{ _linode_access_key }} --secret_key={{ _linode_secret_key }}
+    --host={{ _host }} --no-ssl --host-bucket={{ _host }} s3://{{ _linode_bucket }}/passbolt/{{ item | basename }}.zip"
   with_items:
     - "{{ _passbolt_backup }}"
   when: _restore_from_backup.linode == 1
 - name: unzip passbolt backup
   become: true
-  shell: "unzip -o -P {{ _zip_password }} /home/{{ ansible_user }}/{{ item }}.zip -d /"
+  command: "unzip -o -P {{ _zip_password }} /home/{{ ansible_user }}/{{ item }}.zip -d /"
   with_items:
     - "{{ _passbolt_backup }}"
+  changed_when: false
 - name: start passbolt container
   become: true
   docker_container:
@@ -38,13 +42,15 @@
     recurse: yes
     owner: www-data
     group: www-data
+    mode: 0770
   with_items:
     - "{{ _passbolt_backup }}"
 - name: import gpg keys
   become: true
-  shell: "docker exec {{ _passbolt_name }} bash -c 'gpg --import /etc/passbolt/gpg/{{ item }}.asc'"
+  command: "docker exec {{ _passbolt_name }} bash -c 'gpg --import /etc/passbolt/gpg/{{ item }}.asc'"
   with_items:
     - "{{ _gpg_server_keys }}"
+  changed_when: false
 - name: remove backups from the host
   file:
     state: absent

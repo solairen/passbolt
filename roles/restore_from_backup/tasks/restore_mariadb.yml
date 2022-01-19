@@ -1,6 +1,7 @@
 ---
 - name: download passbolt backups from Azure
-  shell: "az storage blob download --account-name {{ account }} --container {{ container }} --name {{ item | basename }}.zip --file {{ item | basename }}.zip --account-key {{ key }}"
+  command: "az storage blob download
+    --account-name {{ account }} --container {{ container }} --name {{ item | basename }}.zip --file {{ item | basename }}.zip --account-key {{ key }}"
   with_items:
     - "{{ _mariadb_backup }}"
   when: _restore_from_backup.azure == 1
@@ -16,18 +17,23 @@
     - "{{ _mariadb_backup }}"
   when: _restore_from_backup.aws == 1
 - name: download passbolt backups from Linode
-  shell: "s3cmd get --access_key={{ _linode_access_key }} --secret_key={{ _linode_secret_key }} --host={{ _host }} --no-ssl --host-bucket={{ _host }} s3://{{ _linode_bucket }}/{{ item | basename }}.zip"
+  command: "s3cmd get
+    --access_key={{ _linode_access_key }} --secret_key={{ _linode_secret_key }}
+    --host={{ _host }} --no-ssl --host-bucket={{ _host }} s3://{{ _linode_bucket }}/passbolt/{{ item | basename }}.zip"
   with_items:
     - "{{ _mariadb_backup }}"
   when: _restore_from_backup.linode == 1
 - name: unzip mariadb backup
   become: true
-  shell: "unzip -o -P {{ _zip_password }} /home/{{ ansible_user }}/{{ item }}.zip -d /"
+  command: "unzip -o -P {{ _zip_password }} /home/{{ ansible_user }}/{{ item }}.zip -d /"
   with_items:
     - "{{ _mariadb_backup }}"
+  changed_when: false
 - name: import mariadb sql backup
   become: true
-  shell: "docker exec {{ _mariadb_name }} sh -c 'mysql -u{{ _mariadb_username }} -p{{ _mariadb_password }} {{ _mariadb_database }} < /var/lib/mysql/passbolt.sql'"
+  community.docker.docker_container_exec:
+    container: "{{ _mariadb_name }}"
+    command: /bin/sh -c "mysql -u{{ _mariadb_username }} -p{{ _mariadb_password }} {{ _mariadb_database }} < /var/lib/mysql/passbolt.sql"
 - name: remove backups from the host
   file:
     state: absent

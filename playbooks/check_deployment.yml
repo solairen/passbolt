@@ -24,5 +24,10 @@
           - "Restore from Azure: {{ _restore_from_backup.azure }}"
           - "Restore from Linode {{ _restore_from_backup.linode }}"
           - "Restore from AWS {{ _restore_from_backup.aws }}"
-      failed_when: _restore_from_backup.azure >= 1 and _restore_from_backup.linode >= 1 and _restore_from_backup.aws >= 1 or _restore_from_backup.azure >= 2 or _restore_from_backup.linode >= 2 or _restore_from_backup.aws >= 2
+      failed_when: _restore_from_backup.azure >= 1
+        and _restore_from_backup.linode >= 1 and
+        _restore_from_backup.aws >= 1
+        or _restore_from_backup.azure >= 2
+        or _restore_from_backup.linode >= 2
+        or _restore_from_backup.aws >= 2
       when: deployment | lower == "greenfield"
