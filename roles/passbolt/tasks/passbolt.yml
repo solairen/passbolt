@@ -5,7 +5,9 @@
   docker_container:
     name: "{{ _passbolt_name }}"
     image: "passbolt/passbolt:{{ _version }}"
-    state: "{% if _restore_from_backup.azure == 1 -%} present {%- elif _restore_from_backup.linode == 1 -%} present {%- elif _restore_from_backup.aws == 1 -%} present {%- else -%} started {%- endif %}"
+    state: "{% if _restore_from_backup.azure == 1 -%} present
+      {%- elif _restore_from_backup.linode == 1 -%} present
+      {%- elif _restore_from_backup.aws == 1 -%} present {%- else -%} started {%- endif %}"
     network_mode: "{{ _passbolt_net }}"
     networks:
       - name: "{{ _passbolt_net }}"
@@ -14,7 +16,7 @@
       - "443:443/tcp"
     volumes:
       - passbolt-gpg:/etc/passbolt/gpg
-      - passbolt-cert:/etc/ssl/certs
+      - passbolt-certs:/etc/ssl/certs
       - passbolt-jwt:/etc/passbolt/jwt
     env:
       TZ: "{{ _time_zone }}"

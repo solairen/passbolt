@@ -7,7 +7,7 @@
     network_mode: "{{ _check_aio }}"
     networks:
       - name: "{{ _check_aio }}"
-    ports: 
+    ports:
       - "{{ _mariadb_port }}:3306/tcp"
     volumes:
       - mariadb-data:/var/lib/mysql

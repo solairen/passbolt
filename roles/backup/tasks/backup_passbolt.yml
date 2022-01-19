@@ -1,8 +1,9 @@
 ---
 - name: zip passbolt folders
-  shell: "zip --password {{ _zip_password }} -r {{ item }}.zip /var/passbolt/{{ item | basename }}"
+  command: "zip --password {{ _zip_password }} -r {{ item }}.zip /var/passbolt/{{ item | basename }}"
   with_items:
     - "{{ _passbolt_backup }}"
+  changed_when: false
 - name: send passbolt backups to AWS
   amazon.aws.aws_s3:
     aws_access_key: "{{ _aws_access_key }}"
@@ -15,12 +16,14 @@
     - "{{ _passbolt_backup }}"
   when: _aws_upload == 1
 - name: send passbolt backups to Linode
-  shell: "s3cmd put {{ item }}.zip --access_key={{ _linode_access_key }} --secret_key={{ _linode_secret_key }} --host={{ _host }} --no-ssl --host-bucket={{ _host }} s3://{{ _linode_bucket }}"
+  command: "s3cmd put {{ item }}.zip
+    --access_key={{ _linode_access_key }} --secret_key={{ _linode_secret_key }} --host={{ _host }} --no-ssl --host-bucket={{ _host }} s3://{{ _linode_bucket }}"
   with_items:
     - "{{ _passbolt_backup }}"
   when: _linode_upload == 1
 - name: send passbolt backups to Azure
-  shell: "az storage blob upload --account-name {{ _acc }} --container-name {{ _cont }} --accounbt-key {{ _key }} --name {{ item | basename }}.zip --file {{ item }}.zip"
+  command: "az storage blob upload
+    --account-name {{ _acc }} --container-name {{ _cont }} --accounbt-key {{ _key }} --name {{ item | basename }}.zip --file {{ item }}.zip"
   with_items:
     - "{{ _passbolt_backup }}"
   when: _azure_upload == 1

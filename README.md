@@ -13,6 +13,7 @@ This ansible script installs [Passbolt](https://www.passbolt.com/) and [MariaDB]
 * [Linode Object Storage](https://www.linode.com/docs/guides/platform/object-storage/)
 * [s3cmd](https://www.linode.com/docs/guides/how-to-use-object-storage/#s3cmd)
 * [boto3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
+* [community.docker](https://galaxy.ansible.com/community/docker)
 
 ### Configuration
 
