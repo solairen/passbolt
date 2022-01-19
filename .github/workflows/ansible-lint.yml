@@ -27,4 +27,4 @@ jobs:
           roles/prepare/vars/*.yml
           roles/restore_from_backup/tasks/*.yml
           roles/restore_from_backup/vars/*.yml
-        args: -x 303
+        args: -v -x 303
