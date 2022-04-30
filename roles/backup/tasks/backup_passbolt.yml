@@ -1,6 +1,6 @@
 ---
 - name: zip passbolt folders
-  command: "zip --password {{ _zip_password }} -r {{ item }}.zip /var/passbolt/{{ item | basename }}"
+  ansible.builtin.command: "zip --password {{ _zip_password }} -r {{ item }}.zip /var/passbolt/{{ item | basename }}"
   with_items:
     - "{{ _passbolt_backup }}"
   changed_when: false
@@ -16,19 +16,19 @@
     - "{{ _passbolt_backup }}"
   when: _aws_upload == 1
 - name: send passbolt backups to Linode
-  command: "s3cmd put {{ item }}.zip
+  ansible.builtin.command: "s3cmd put {{ item }}.zip
     --access_key={{ _linode_access_key }} --secret_key={{ _linode_secret_key }} --host={{ _host }} --no-ssl --host-bucket={{ _host }} s3://{{ _linode_bucket }}"
   with_items:
     - "{{ _passbolt_backup }}"
   when: _linode_upload == 1
 - name: send passbolt backups to Azure
-  command: "az storage blob upload
+  ansible.builtin.command: "az storage blob upload
     --account-name {{ _acc }} --container-name {{ _cont }} --accounbt-key {{ _key }} --name {{ item | basename }}.zip --file {{ item }}.zip"
   with_items:
     - "{{ _passbolt_backup }}"
   when: _azure_upload == 1
 - name: remove backups from the host
-  file:
+  ansible.builtin.file:
     state: absent
     path: "{{ item }}.zip"
   with_items:

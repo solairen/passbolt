@@ -1,5 +1,12 @@
 ---
-- hosts: "{% if aio == 1 -%} passbolt {%- else -%} mariadb, passbolt {%- endif %}"
+- hosts: passbolt
   become: true
   roles:
-    - roles/prepare
+    - role: ../roles/prepare
+      when: aio == 1
+
+- hosts: mariadb, passbolt
+  become: true
+  roles:
+    - role: ../roles/prepare
+      when: aio != 1

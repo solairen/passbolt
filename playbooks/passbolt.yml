@@ -8,11 +8,11 @@
           vars:
             _version: "{{ _passbolt_version }}"
             _task_name: "run Passbolt in version: {{ _passbolt_version }}"
-          import_role:
-            name: roles/passbolt
+          ansible.builtin.import_role:
+            name: ../roles/passbolt
       rescue:
         - name: do not restore in greenfield
-          fail:
+          ansible.builtin.fail:
             msg: "Installation failed!"
           when: deployment | lower == "greenfield"
         - name: restore Passbolt on fail

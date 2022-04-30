@@ -1,6 +1,6 @@
 ---
 - name: download passbolt backups from Azure
-  command: "az storage blob download
+  ansible.builtin.command: "az storage blob download
     --account-name {{ account }} --container {{ container }} --name {{ item | basename }}.zip --file {{ item | basename }}.zip --account-key {{ key }}"
   with_items:
     - "{{ _passbolt_backup }}"
@@ -17,7 +17,7 @@
     - "{{ _passbolt_backup }}"
   when: _restore_from_backup.aws == 1
 - name: download passbolt backups from Linode
-  command: "s3cmd get
+  ansible.builtin.command: "s3cmd get
     --access_key={{ _linode_access_key }} --secret_key={{ _linode_secret_key }}
     --host={{ _host }} --no-ssl --host-bucket={{ _host }} s3://{{ _linode_bucket }}/passbolt/{{ item | basename }}.zip"
   with_items:
@@ -25,10 +25,15 @@
   when: _restore_from_backup.linode == 1
 - name: unzip passbolt backup
   become: true
-  command: "unzip -o -P {{ _zip_password }} /home/{{ ansible_user }}/{{ item }}.zip -d /"
+  ansible.builtin.unarchive:
+    src: $HOME/{{ item | basenmame }}.zip
+    dest: /
+    remote_src: true
+    extra_opts:
+      - "P"
+      - "{{ _zip_password }}"
   with_items:
     - "{{ _passbolt_backup }}"
-  changed_when: false
 - name: start passbolt container
   become: true
   docker_container:
@@ -36,10 +41,10 @@
     state: started
 - name: change owner for passbolt folders
   become: true
-  file:
+  ansible.builtin.file:
     path: "/var/passbolt/{{ item }}"
     state: directory
-    recurse: yes
+    recurse: true
     owner: www-data
     group: www-data
     mode: 0770
@@ -47,12 +52,12 @@
     - "{{ _passbolt_backup }}"
 - name: import gpg keys
   become: true
-  command: "docker exec {{ _passbolt_name }} bash -c 'gpg --import /etc/passbolt/gpg/{{ item }}.asc'"
+  ansible.builtin.command: "docker exec {{ _passbolt_name }} bash -c 'gpg --import /etc/passbolt/gpg/{{ item }}.asc'"
   with_items:
     - "{{ _gpg_server_keys }}"
   changed_when: false
 - name: remove backups from the host
-  file:
+  ansible.builtin.file:
     state: absent
     path: "{{ item }}.zip"
   with_items:

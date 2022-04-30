@@ -8,11 +8,11 @@
           vars:
             _version: "{{ _mariadb_version }}"
             _task_name: "run MariaDB in version: {{ _mariadb_version }}"
-          import_role:
-            name: roles/mariadb
+          ansible.builtin.import_role:
+            name: ../roles/mariadb
       rescue:
         - name: do not restore in greenfield
-          fail:
+          ansible.builtin.fail:
             msg: "Instasllation failed!"
           when: deployment | lower == "greenfield"
         - name: restore MariaDB on fail

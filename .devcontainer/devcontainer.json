@@ -1,5 +1,8 @@
 {
-    "image": "moleszek/ansible:latest",
+    "name": "pihole-dev",
+    "build": {
+        "dockerfile": "Dockerfile-dev"
+    },
     "extensions": [
         "redhat.ansible",
         "ms-python.python",
@@ -7,8 +10,15 @@
         "redhat.vscode-yaml",
         "docsmsft.docs-preview",
         "redhat.ansible",
-        "gruntfuggly.todo-tree",
+        "aaron-bond.better-comments",
         "eamodio.gitlens"
     ],
-    "postCreateCommand": "apt update && apt -y install git ansible-lint sshpass && ansible-galaxy collection install community.docker"
+    "postCreateCommand": "echo DONE!",
+    "remoteUser": "root",
+    "features": {
+        "github-cli": "latest"
+    },
+    "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+    }
 }
