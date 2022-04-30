@@ -8,7 +8,7 @@
     state: present
   when: aio == 0
 - name: create mariadb folder
-  file:
+  ansible.builtin.file:
     path: "{{ _mariadb_folder }}"
     state: directory
     owner: "{{ ansible_user }}"

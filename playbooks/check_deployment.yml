@@ -4,14 +4,14 @@
   become: false
   tasks:
     - name: check deployment
-      debug:
+      ansible.builtin.debug:
         msg: "Deployment: {{ deployment | lower }}."
       failed_when: deployment | lower not in [ "greenfield", "brownfield" ]
     - name: check aio deployment
-      debug:
+      ansible.builtin.debug:
         msg: "AiO deployment: {{ aio }}"
     - name: check if send backup is selected
-      debug:
+      ansible.builtin.debug:
         msg:
           - "Send to Azure: {{ _azure_upload }}"
           - "Send to Linode: {{ _linode_upload }}"
@@ -19,7 +19,7 @@
       failed_when: _azure_upload >= 2 and _linode_upload >= 2 and _aws_upload >= 2 or _azure_upload >= 2 or _linode_upload >= 2 or _aws_upload >= 2
       when: deployment | lower == "brownfield"
     - name: check if restore from backup is selected
-      debug:
+      ansible.builtin.debug:
         msg:
           - "Restore from Azure: {{ _restore_from_backup.azure }}"
           - "Restore from Linode {{ _restore_from_backup.linode }}"

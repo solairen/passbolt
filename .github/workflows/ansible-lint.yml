@@ -6,25 +6,40 @@ on:
   pull_request:
     branches-ignore:
       - "main"
+
+env:
+  DISCORD: ${{ secrets.discord_webhook }}
+
 jobs:
   ansible-lint:
     name: Run Ansible lint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Check yaml files
-      uses: ansible/ansible-lint-action@master
-      with:
-        targets: |
-          playbooks/*.yml
-          roles/backup/tasks/*.yml
-          roles/backup/vars/*.yml
-          roles/mariadb/tasks/*.yml
-          roles/mariadb/vars/*.yml
-          roles/passbolt/tasks/*.yml
-          roles/passbolt/vars/*.yml
-          roles/prepare/tasks/*.yml
-          roles/prepare/vars/*.yml
-          roles/restore_from_backup/tasks/*.yml
-          roles/restore_from_backup/vars/*.yml
-        args: -x 303
+      uses: ansible-community/ansible-lint-action@v6.0.2
+  notify_on_success:
+    name: Send notification on success
+    needs:
+      - ansible-lint
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ env.DISCORD }}
+          description: "No errors found!"
+  notify_on_failure:
+    name: Send notification on failure
+    needs:
+      - ansible-lint
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ env.DISCORD }}
+          status: failure
+          description: "Errors have been found!"

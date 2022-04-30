@@ -8,7 +8,7 @@
     state: present
   when: aio == 0
 - name: create passbolt folders
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: www-data
