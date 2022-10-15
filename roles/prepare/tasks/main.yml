@@ -1,4 +1,6 @@
 ---
-- import_tasks: ubuntu.yml
-- import_tasks: docker_network.yml
+- name: Import Ubuntu task
+  ansible.builtin.import_tasks: ubuntu.yml
+- name: Import docker-network task
+  ansible.builtin.import_tasks: docker_network.yml
   when: aio == 1

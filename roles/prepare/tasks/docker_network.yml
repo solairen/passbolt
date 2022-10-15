@@ -1,5 +1,5 @@
 ---
-- name: create docker network
-  docker_network:
+- name: Create docker network
+  ansible.builtin.docker_network:
     name: "{{ _passbolt_net }}"
     state: present

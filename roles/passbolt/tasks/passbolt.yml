@@ -2,12 +2,12 @@
 - name: "{{ _task_name }}"
   vars:
     _check_aio:
-  docker_container:
+  ansible.builtin.docker_container:
     name: "{{ _passbolt_name }}"
     image: "passbolt/passbolt:{{ _version }}"
-    state: "{% if _restore_from_backup.azure == 1 -%} present
-      {%- elif _restore_from_backup.linode == 1 -%} present
-      {%- elif _restore_from_backup.aws == 1 -%} present {%- else -%} started {%- endif %}"
+    state: "{% if _restore_from_backup.azure == 1 -%} present{%- elif _restore_from_backup.linode == 1 -%}
+      present{%- elif _restore_from_backup.aws == 1 -%}
+      present{%- else -%} started{%- endif %}"
     network_mode: "{{ _passbolt_net }}"
     networks:
       - name: "{{ _passbolt_net }}"

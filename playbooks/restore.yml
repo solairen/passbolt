@@ -1,5 +1,6 @@
 ---
 - hosts: all
+  name: Restore
   gather_facts: true
   roles:
     - role: ../roles/restore_from_backup

@@ -1,6 +1,9 @@
 ---
-- import_tasks: greenfield.yml
+- name: Import greenfield task
+  ansible.builtin.import_tasks: greenfield.yml
   when: deployment == "greenfield"
-- import_tasks: brownfield.yml
+- name: Import brownfield task
+  ansible.builtin.import_tasks: brownfield.yml
   when: deployment == "brownfield"
-- import_tasks: passbolt.yml
+- name: Import Passbolt task
+  ansible.builtin.import_tasks: passbolt.yml

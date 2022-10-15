@@ -1,10 +1,10 @@
 ---
-- name: remove Passbolt container
-  docker_container:
+- name: Remove Passbolt container
+  ansible.builtin.docker_container:
     name: "{{ _passbolt_name }}"
     state: absent
-- name: remove old Passbolt docker image
-  docker_image:
+- name: Remove old Passbolt docker image
+  ansible.builtin.docker_image:
     state: absent
     name: passbolt/passbolt
     tag: "{{ _passbolt_restore_version }}"
