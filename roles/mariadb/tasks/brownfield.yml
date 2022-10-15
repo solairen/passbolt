@@ -1,10 +1,10 @@
 ---
-- name: remove MariaDB container
-  docker_container:
+- name: Remove MariaDB container
+  ansible.builtin.docker_container:
     name: "{{ _mariadb_name }}"
     state: absent
-- name: remove old MariaDB docker image
-  docker_image:
+- name: Remove old MariaDB docker image
+  ansible.builtin.docker_container:
     state: absent
     name: mariadb
     tag: "{{ _mariadb_restore_version }}"

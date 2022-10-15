@@ -2,22 +2,25 @@
 - hosts: passbolt
   become: true
   gather_facts: true
+  name: Passbolt
   tasks:
-    - block:
-        - name: install Passbolt
+    - name: Restore on failure
+      block:
+        - name: Install Passbolt
           vars:
             _version: "{{ _passbolt_version }}"
             _task_name: "run Passbolt in version: {{ _passbolt_version }}"
           ansible.builtin.import_role:
             name: ../roles/passbolt
       rescue:
-        - name: do not restore in greenfield
+        - name: Do not restore in greenfield
           ansible.builtin.fail:
             msg: "Installation failed!"
           when: deployment | lower == "greenfield"
-        - name: restore Passbolt on fail
+        - name: Restore Passbolt on fail
           vars:
             _version: "{{ _passbolt_restore_version }}"
             _task_name: "restore Passbolt to version: {{ _passbolt_restore_version }}"
-          include: ../roles/passbolt/tasks/passbolt.yml
+          ansible.builtin.include_role:
+            name: ../roles/passbolt/tasks/passbolt.yml
           when: deployment | lower == "brownfield"

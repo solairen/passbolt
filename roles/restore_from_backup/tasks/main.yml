@@ -1,5 +1,7 @@
 ---
-- import_tasks: restore_mariadb.yml
+- name: Import restore_mariadb task
+  ansible.builtin.import_tasks: restore_mariadb.yml
   when: _mariadb == 1 and inventory_hostname in groups['mariadb']
-- import_tasks: restore_passbolt.yml
+- name: Import restore_passbolt task
+  ansible.builtin.import_tasks: restore_passbolt.yml
   when: _passbolt == 1 and inventory_hostname in groups['passbolt']

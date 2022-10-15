@@ -1,21 +1,21 @@
 ---
-- name: pull MariaDB docker image
-  docker_image:
+- name: Pull MariaDB docker image
+  ansible.builtin.docker_image:
     name: "mariadb:{{ _mariadb_version }}"
-- name: create docker network
-  docker_network:
+- name: Create docker network
+  ansible.builtin.docker_network:
     name: "{{ _mariadb_net }}"
     state: present
   when: aio == 0
-- name: create mariadb folder
+- name: Create mariadb folder
   ansible.builtin.file:
     path: "{{ _mariadb_folder }}"
     state: directory
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: 0755
-- name: create mariadb docker volume
-  docker_volume:
+- name: Create mariadb docker volume
+  ansible.builtin.docker_volume:
     name: mariadb-data
     driver_options:
       type: none
