@@ -1,9 +1,10 @@
 ---
 - name: Pull Passbolt docker image
-  ansible.builtin.docker_image:
+  community.docker.docker_image:
     name: "passbolt/passbolt:{{ _passbolt_version }}"
+    source: pull
 - name: Create docker network
-  ansible.builtin.docker_network:
+  community.docker.docker_network:
     name: "{{ _passbolt_net }}"
     state: present
   when: aio == 0
@@ -13,14 +14,14 @@
     state: directory
     owner: www-data
     group: www-data
-    mode: 0440
-  loop: "{{ _passbolt_folder }}"
+    mode: "0440"
+  loop: "{{ passbolt_folder }}"
 - name: Create passbolt gpg docker volume
-  ansible.builtin.docker_volume:
+  community.docker.docker_volume:
     name: "passbolt-{{ item | basename }}"
     driver_options:
       type: none
       device: "{{ item }}"
       o: bind
   with_items:
-    - "{{ _passbolt_folder }}"
+    - "{{ passbolt_folder }}"

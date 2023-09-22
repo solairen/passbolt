@@ -4,8 +4,8 @@
 #################################
 _passbolt_net: passbolt_network
 _passbolt_name: passbolt
-_passbolt_version: 3.4.0-ce
-_passbolt_restore_version: 3.3.1-ce
+_passbolt_version: 4.2.0-1-ce
+_passbolt_restore_version: 4.1.2-1-ce
 _app_full_base_url: https://passbolt.testdomain.com
 _email_default_from: mail@outlook.com
 _email_transport_default_host: smtp.office365.com
