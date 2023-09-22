@@ -1,12 +1,19 @@
 ---
 - name: Download passbolt backups from Azure
-  ansible.builtin.command: "az storage blob download
-    --account-name {{ account }} --container {{ container }} --name {{ item | basename }}.zip --file {{ item | basename }}.zip --account-key {{ key }}"
+  ansible.builtin.command: >
+    az storage blob download
+    --account-name {{ restore_from_backup_account }}
+    --container {{ restore_from_backup_container }}
+    --name {{ item | basename }}.zip
+    --file {{ item | basename }}.zip
+    --account-key {{ restore_from_backup_key }}
   with_items:
-    - "{{ _passbolt_backup }}"
+    - "{{ restore_from_backup_passbolt_backup }}"
   when: _restore_from_backup.azure == 1
+  changed_when: false
+
 - name: Download passbolt backups from AWS
-  ansible.builtin.aws_s3:
+  amazon.aws.aws_s3:
     aws_access_key: "{{ _aws_access_key }}"
     aws_secret_key: "{{ _aws_secret_key }}"
     mode: get
@@ -14,51 +21,67 @@
     object: "passbolt/{{ item | basename }}.zip"
     dest: "$HOME/{{ item | basename }}.zip"
   with_items:
-    - "{{ _passbolt_backup }}"
+    - "{{ restore_from_backup_passbolt_backup }}"
   when: _restore_from_backup.aws == 1
+
 - name: Download passbolt backups from Linode
-  ansible.builtin.command: "s3cmd get
-    --access_key={{ _linode_access_key }} --secret_key={{ _linode_secret_key }}
-    --host={{ _host }} --no-ssl --host-bucket={{ _host }} s3://{{ _linode_bucket }}/passbolt/{{ item | basename }}.zip"
+  ansible.builtin.command: >
+    s3cmd get
+    --access_key={{ _linode_access_key }}
+    --secret_key={{ _linode_secret_key }}
+    --host={{ _host }}
+    --no-ssl
+    --host-bucket={{ _host }}
+    s3://{{ _linode_bucket }}/passbolt/{{ item | basename }}.zip
   with_items:
-    - "{{ _passbolt_backup }}"
+    - "{{ restore_from_backup_passbolt_backup }}"
   when: _restore_from_backup.linode == 1
+  changed_when: false
+
 - name: Unzip passbolt backup
   become: true
   ansible.builtin.unarchive:
-    src: $HOME/{{ item | basenmame }}.zip
+    src: "$HOME/{{ item | basename }}.zip"
     dest: /
     remote_src: true
     extra_opts:
       - "P"
       - "{{ _zip_password }}"
   with_items:
-    - "{{ _passbolt_backup }}"
+    - "{{ restore_from_backup_passbolt_backup }}"
+
 - name: Start passbolt container
   become: true
-  ansible.builtin.docker_container:
+  community.docker.docker_container:
     name: "{{ _passbolt_name }}"
     state: started
+
 - name: Change owner for passbolt folders
   become: true
-  ansible.builtin.file:
-    path: "/var/passbolt/{{ item }}"
-    state: directory
+  ansible.builtin.find:
+    paths: "/var/passbolt/{{ item }}"
     recurse: true
+  register: found_passbolt_folders
+
+- name: Set owner for passbolt folders
+  become: true
+  ansible.builtin.file:
+    path: "{{ item.path }}"
     owner: www-data
     group: www-data
-    mode: 0770
-  with_items:
-    - "{{ _passbolt_backup }}"
+    mode: "0770"
+  with_items: "{{ found_passbolt_folders.files }}"
+
 - name: Import gpg keys
   become: true
   ansible.builtin.command: "docker exec {{ _passbolt_name }} bash -c 'gpg --import /etc/passbolt/gpg/{{ item }}.asc'"
   with_items:
-    - "{{ _gpg_server_keys }}"
+    - "{{ restore_from_backup_gpg_server_keys }}"
   changed_when: false
-- name: Remove backups from the host
+
+- name: Remove passbolt backups from the host
   ansible.builtin.file:
     state: absent
-    path: "{{ item }}.zip"
+    path: "$HOME/{{ item | basename }}.zip"
   with_items:
-    - "{{ _passbolt_backup }}"
+    - "{{ restore_from_backup_passbolt_backup }}"

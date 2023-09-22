@@ -4,23 +4,21 @@
   gather_facts: true
   name: MariaDB
   tasks:
-    - name: Restore on failure
+    - name: Restore MariaDB on fail
       block:
         - name: Install MariaDB
           vars:
-            _version: "{{ _mariadb_version }}"
-            _task_name: "run MariaDB in version: {{ _mariadb_version }}"
+            mariadb_version: "{{ _mariadb_version }}"
+            mariadb_task_name: "run MariaDB in version: {{ _mariadb_version }}"
           ansible.builtin.import_role:
-            name: ../roles/mariadb
+            name: mariadb
       rescue:
-        - name: Do not restore in greenfield
-          ansible.builtin.fail:
-            msg: "Instasllation failed!"
-          when: deployment | lower == "greenfield"
-        - name: Restore MariaDB on fail
-          vars:
-            _version: "{{ _mariadb_restore_version }}"
-            _task_name: "restore MariaDB to version: {{ _mariadb_restore_version }}"
+        - name: Set MariaDB restore variables
+          ansible.builtin.set_fact:
+            mariadb_version: "{{ _mariadb_restore_version }}"
+            mariadb_task_name: "restore MariaDB to version: {{ _mariadb_restore_version }}"
+          when: deployment | lower == "brownfield"
+        - name: Include MariaDB restore role
           ansible.builtin.include_role:
-            name: ../roles/mariadb/tasks/mariadb.yml
+            name: mariadb
           when: deployment | lower == "brownfield"

@@ -10,7 +10,7 @@ _zip_password:
 ################################
 ##### OTHER CONFIGURATION ######
 ################################
-_docker_compose_version: 1.29.2
+_docker_compose_version: 2.22.0
 _restore_from_backup:
     azure: 0
     linode: 0

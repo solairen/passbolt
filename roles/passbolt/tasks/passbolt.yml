@@ -1,10 +1,10 @@
 ---
-- name: "{{ _task_name }}"
+- name: "{{ passbolt_task_name }}"
   vars:
     _check_aio:
-  ansible.builtin.docker_container:
+  community.docker.docker_container:
     name: "{{ _passbolt_name }}"
-    image: "passbolt/passbolt:{{ _version }}"
+    image: "passbolt/passbolt:{{ passbolt_version }}"
     state: "{% if _restore_from_backup.azure == 1 -%} present{%- elif _restore_from_backup.linode == 1 -%}
       present{%- elif _restore_from_backup.aws == 1 -%}
       present{%- else -%} started{%- endif %}"
@@ -20,7 +20,7 @@
       - passbolt-jwt:/etc/passbolt/jwt
     env:
       TZ: "{{ _time_zone }}"
-      DATASOURCES_DEFAULT_HOST: "{{ _mariadb_ip_address }}"
+      DATASOURCES_DEFAULT_HOST: "{{ passbolt_mariadb_ip_address }}"
       DATASOURCES_DEFAULT_PASSWORD: "{{ _mariadb_password }}"
       DATASOURCES_DEFAULT_USERNAME: "{{ _mariadb_username }}"
       DATASOURCES_DEFAULT_DATABASE: "{{ _mariadb_database }}"

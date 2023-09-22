@@ -1,7 +1,7 @@
 ---
-_account: "{{ _account_name }}"
-_container: "{{ _container_name }}"
-_key: "{{ _account_key }}"
-_passbolt_backup: [gpg, jwt]
-_mariadb_backup: [database]
-_gpg_server_keys: [serverkey, serverkey_private]
+restore_from_backup_account: "{{ _account_name }}"
+restore_from_backup_container: "{{ _container_name }}"
+restore_from_backup_key: "{{ _account_key }}"
+restore_from_backup_passbolt_backup: [gpg, jwt]
+restore_from_backup_mariadb_backup: [database]
+restore_from_backup_gpg_server_keys: [serverkey, serverkey_private]

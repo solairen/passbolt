@@ -1,9 +1,19 @@
 {
-    "name": "pihole-dev",
-    "build": {
-        "dockerfile": "Dockerfile-dev"
-    },
-    "extensions": [
+  "name": "passbolt-dev",
+  "build": {
+      "dockerfile": "../docker/Dockerfile-dev"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "bash",
+            "icon": "terminal-bash"
+          }
+        }
+      },
+      "extensions": [
         "redhat.ansible",
         "ms-python.python",
         "ms-python.vscode-pylance",
@@ -12,13 +22,13 @@
         "redhat.ansible",
         "aaron-bond.better-comments",
         "eamodio.gitlens"
-    ],
-    "postCreateCommand": "echo DONE!",
-    "remoteUser": "root",
-    "features": {
-        "github-cli": "latest"
-    },
-    "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash"
+      ]
     }
+  },
+  "postCreateCommand": "echo DONE!",
+  "remoteUser": "root",
+  "features": {
+      "github-cli": "latest",
+      "git": "latest"
+  }
 }

@@ -4,23 +4,21 @@
   gather_facts: true
   name: Passbolt
   tasks:
-    - name: Restore on failure
+    - name: Restore Passbolt if installation failed
       block:
         - name: Install Passbolt
           vars:
-            _version: "{{ _passbolt_version }}"
-            _task_name: "run Passbolt in version: {{ _passbolt_version }}"
+            passbolt_version: "{{ _passbolt_version }}"
+            passbolt_task_name: "run Passbolt in version: {{ _passbolt_version }}"
           ansible.builtin.import_role:
-            name: ../roles/passbolt
+            name: passbolt
       rescue:
-        - name: Do not restore in greenfield
-          ansible.builtin.fail:
-            msg: "Installation failed!"
-          when: deployment | lower == "greenfield"
-        - name: Restore Passbolt on fail
-          vars:
-            _version: "{{ _passbolt_restore_version }}"
-            _task_name: "restore Passbolt to version: {{ _passbolt_restore_version }}"
+        - name: Set Passbolt restore variables
+          ansible.builtin.set_fact:
+            passbolt_version: "{{ _passbolt_restore_version }}"
+            passbolt_task_name: "restore Passbolt to version: {{ _passbolt_restore_version }}"
+          when: deployment | lower == "brownfield"
+        - name: Include Passbolt restore role
           ansible.builtin.include_role:
-            name: ../roles/passbolt/tasks/passbolt.yml
+            name: passbolt
           when: deployment | lower == "brownfield"

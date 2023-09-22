@@ -1,6 +1,6 @@
 ---
-_acc: "{{ _account_name }}"
-_cont: "{{ _container_name }}"
-_key: "{{ _account_key }}"
-_passbolt_backup: [/var/passbolt/gpg, /var/passbolt/jwt]
-_mariadb_backup: [/var/mariadb]
+backup_acc: "{{ _account_name }}"
+backup_cont: "{{ _container_name }}"
+backup_key: "{{ _account_key }}"
+backup_passbolt_backup: [/var/passbolt/gpg, /var/passbolt/jwt]
+backup_mariadb_backup: [/var/mariadb]

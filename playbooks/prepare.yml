@@ -1,14 +1,6 @@
 ---
-- hosts: passbolt
+- hosts: "{{ 'passbolt' if aio == 1 else 'passbolt,mariadb' }}"
   become: true
   name: Prepare
   roles:
-    - role: ../roles/prepare
-      when: aio == 1
-
-- hosts: mariadb, passbolt
-  name: Prepare
-  become: true
-  roles:
-    - role: ../roles/prepare
-      when: aio != 1
+    - prepare

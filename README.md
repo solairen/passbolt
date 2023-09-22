@@ -2,7 +2,8 @@
 This ansible script installs [Passbolt](https://www.passbolt.com/) and [MariaDB](https://mariadb.org/) container on Ubuntu.<br/>
 
 ### Supported OS:
-* Ubuntu 20.04
+* Ubuntu 20.04 LTS
+* Ubuntu 22.04 LTS
 
 ### Prerequisites
 * [Ansible](https://docs.ansible.com/ansible/latest/index.html)
@@ -31,20 +32,21 @@ On host where Passbolt and MariaDB will be installed, ssh port should be enabled
 In `inventory.yml`, set **IP**, **user**, **password**, **ssh port** or **ssh_key** on where Passbolt and MariaDB should be installed.</br>
 If **ssh_key** is used, comment **password**.</br>
 If **password** is used, comment **ssh_key**.</br>
-```yml
-linux:
-   vars:
-      ansible_ssh_user: username
-      ansible_ssh_pass: password
-      ansible_port: 22
-      ansible_ssh_private_key_file: <path_to_key>
-   children:
-      mariadb:
-         hosts:
-            127.0.0.1:
-      passbolt:
-         hosts:
-            127.0.0.1:
+```ini
+[passbolt:children]
+mariadb
+passbolt
+
+[passbolt]
+127.0.0.1
+
+[mariadb]
+127.0.0.1
+
+[all:vars]
+ansible_ssh_user=username
+ansible_ssh_private_key_file=/root/.ssh/id_ed25519
+ansible_port=22
 ```
 
 #### Inputs.yml

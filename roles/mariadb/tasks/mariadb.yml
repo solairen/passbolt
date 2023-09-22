@@ -1,12 +1,12 @@
 ---
-- name: "{{ _task_name }}"
-  ansible.builtin.docker_container:
+- name: "{{ mariadb_task_name }}"
+  community.docker.docker_container:
     name: "{{ _mariadb_name }}"
-    image: "mariadb:{{ _version }}"
+    image: "mariadb:{{ mariadb_version }}"
     state: started
-    network_mode: "{{ _check_aio }}"
+    network_mode: "{{ mariadb_check_aio }}"
     networks:
-      - name: "{{ _check_aio }}"
+      - name: "{{ mariadb_check_aio }}"
     ports:
       - "{{ _mariadb_port }}:3306/tcp"
     volumes:
