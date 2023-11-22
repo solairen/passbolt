@@ -33,10 +33,6 @@ In `inventory.ini`, set **IP**, **user**, **password**, **ssh port** or **ssh_ke
 If **ssh_key** is used, comment **password**.</br>
 If **password** is used, comment **ssh_key**.</br>
 ```ini
-[passbolt:children]
-mariadb
-passbolt
-
 [passbolt]
 127.0.0.1
 

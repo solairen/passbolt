@@ -27,13 +27,13 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          file: Docker/Dockerfile
+          file: docker/Dockerfile
           push: true
           tags: moleszek/passbolt:latest
 
       - name: Build and push with version
         uses: docker/build-push-action@v5
         with:
-          file: Docker/Dockerfile
+          file: docker/Dockerfile
           push: true
           tags: moleszek/passbolt:${{ inputs.versioning }}
