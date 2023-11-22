@@ -28,8 +28,8 @@ It is a possibility to upload backup to all cloud providers at one time, to do t
 #### Firewall
 On host where Passbolt and MariaDB will be installed, ssh port should be enabled.
 
-#### Inventory.yml
-In `inventory.yml`, set **IP**, **user**, **password**, **ssh port** or **ssh_key** on where Passbolt and MariaDB should be installed.</br>
+#### Inventory.ini
+In `inventory.ini`, set **IP**, **user**, **password**, **ssh port** or **ssh_key** on where Passbolt and MariaDB should be installed.</br>
 If **ssh_key** is used, comment **password**.</br>
 If **password** is used, comment **ssh_key**.</br>
 ```ini
@@ -136,5 +136,5 @@ More environment variables can be found [here](https://help.passbolt.com/configu
 ### How to run:
 
 ```bash
-ansible-playbook -i inventory.yml install.yml -e "@inputs.yml" --ask-become-pass -vv
+ansible-playbook -i inventory.ini install.yml -e "@inputs.yml" --ask-become-pass -vv
 ```

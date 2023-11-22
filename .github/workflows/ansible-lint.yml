@@ -7,9 +7,6 @@ on:
     branches-ignore:
       - "main"
 
-env:
-  DISCORD: ${{ secrets.discord_webhook }}
-
 jobs:
   ansible-lint:
     name: Run Ansible lint
