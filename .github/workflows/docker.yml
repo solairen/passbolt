@@ -25,14 +25,14 @@ jobs:
           password: ${{ env.DOCKER_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           file: docker/Dockerfile
           push: true
           tags: moleszek/passbolt:latest
 
       - name: Build and push with version
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           file: docker/Dockerfile
           push: true
