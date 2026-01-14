@@ -3,6 +3,15 @@
   "build": {
       "dockerfile": "../docker/Dockerfile-dev"
   },
+  "postCreateCommand": "echo DONE!",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/development,type=bind",
+  "workspaceFolder": "/development",
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.gnupg,target=/home/vscode/.gnupg,type=bind,consistency=cached"
+  ],
+  "remoteUser": "vscode",
+  "containerUser": "vscode",
   "customizations": {
     "vscode": {
       "settings": {
@@ -24,11 +33,5 @@
         "eamodio.gitlens"
       ]
     }
-  },
-  "postCreateCommand": "echo DONE!",
-  "remoteUser": "root",
-  "features": {
-      "github-cli": "latest",
-      "git": "latest"
   }
 }
