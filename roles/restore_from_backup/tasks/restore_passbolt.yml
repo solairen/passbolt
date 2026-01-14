@@ -61,7 +61,7 @@
   ansible.builtin.find:
     paths: "/var/passbolt/{{ item }}"
     recurse: true
-  register: found_passbolt_folders
+  register: restore_from_backup_dirs
 
 - name: Set owner for passbolt folders
   become: true
@@ -70,7 +70,7 @@
     owner: www-data
     group: www-data
     mode: "0770"
-  with_items: "{{ found_passbolt_folders.files }}"
+  with_items: "{{ restore_from_backup_dirs.files }}"
 
 - name: Import gpg keys
   become: true
